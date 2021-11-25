@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.base import Model
 
 
 class Stock(models.Model):
@@ -22,6 +23,25 @@ class Stock(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class StockHolding(models.Model):
+    """Stock holding, tied to a user."""
+
+    user = models.ForeignKey(
+        "accounts.CustomUser", on_delete=models.CASCADE
+    )  # causes circular import
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    notes = models.TextField(blank=True, null=True)
+    shares = models.FloatField(blank=True, null=True)
+    avg_purchase_price = models.FloatField(blank=True, null=True)
+    dividends = models.FloatField(blank=True, null=True)
+    purchased_yield = models.FloatField(blank=True, null=True)
+    current_yield = models.FloatField(blank=True, null=True)
+    estimate_div_earnings = models.FloatField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user} -- {self.stock}"
 
 
 # class Profile(models.Model):
