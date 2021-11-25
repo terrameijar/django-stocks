@@ -48,6 +48,11 @@ class DashBoardView(generics.ListAPIView):
         # return user.stock_holding.all()
 
 
+class StockDetail(generics.RetrieveDestroyAPIView):
+    queryset = StockHolding.objects.all()
+    serializer_class = StockHoldingSerializer
+
+
 class AddUserStock(generics.CreateAPIView):
     queryset = StockHolding.objects.all()
     serializer_class = StockHoldingSerializer

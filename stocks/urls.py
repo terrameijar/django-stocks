@@ -30,5 +30,6 @@ urlpatterns = [
     path("", include(router.urls)),
     path("dashboard/", views.DashBoardView.as_view()),
     path("add/", views.AddUserStock.as_view()),
+    path("detail/<int:pk>", views.StockDetail.as_view(), name="stock-detail"),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
