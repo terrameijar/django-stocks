@@ -21,11 +21,14 @@ from api import views
 
 
 router = routers.DefaultRouter()
-router.register(r"users", views.UserViewSet)
 router.register(r"stocks", views.StockViewSet)
+router.register(r"users", views.UserViewSet)
+# router.register(r"dashboard", views.DashBoardView, basename="dashboard")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include(router.urls)),
+    path("dashboard/", views.DashBoardView.as_view()),
+    path("add/", views.AddUserStock.as_view()),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
 ]
