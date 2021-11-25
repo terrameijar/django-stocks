@@ -183,3 +183,48 @@ class StockManager:
                     description=description,
                 )
             stk.save()
+
+
+def populate_db(stock):
+    print(f"Processing:{stock}")
+    sm2 = StockManager()
+    stk_obj = sm2.get_stock_info(stock)
+    sm2.save_stock(stk_obj)
+    print("Saved to DB")
+
+    # for stock in stock_list:
+    #     stk_obj = sm.get_stock_info(stock)
+    # print("")
+    return "done"
+
+
+def initialise_db(country="united states"):
+    sm = StockManager()
+    stock_list = investpy.stocks.get_stocks_list(country=country)
+    threaded_start = time.time()
+    # with concurrent.futures.ThreadPoolExecutor() as executor:
+    #     future_to_stock = {
+    #         executor.submit(populate_db, stock): stock for stock in stock_list
+    #     }
+    #     for future in concurrent.futures.as_completed(future_to_stock):
+    #         stock = future_to_stock[future]
+    #         try:
+    #             data = future.result()
+    #         except Exception as exc:
+    #             print(f"{stock} generated an exception: {exc}")
+    #         else:
+    #             print(f"{data} saved")
+
+    with concurrent.futures.ProcessPoolExecutor(max_workers=20) as executor:
+        future_to_stock = {
+            executor.submit(populate_db, stock): stock for stock in stock_list
+        }
+        for future in concurrent.futures.as_completed(future_to_stock):
+            stock = future_to_stock[future]
+            try:
+                data = future.result()
+            except Exception as exc:
+                print(f"{stock} generated an exception: {exc}")
+            else:
+                print(f"{data} saved")
+    print(f"Process took {time.time() - threaded_start}s")
